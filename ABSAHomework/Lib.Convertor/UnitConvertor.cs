@@ -7,6 +7,7 @@ namespace Lib.Convertor
     {
         private DataUnitConvertor _dataUnitConvertor = new();
         private LengthUnitConvertor _lengthUnitConvertor = new();
+        private TemperatureUnitConvertor _temperatureUnitConvertor = new();
 
         public async Task<string> ConvertDataAsync(string from, string to)
         {
@@ -20,7 +21,7 @@ namespace Lib.Convertor
 
         public async Task<string> ConvertTemperatureAsync(string from, string to)
         {
-            throw new NotImplementedException();
+            return await _temperatureUnitConvertor.Convert(from, to);
         }
     }
 }
