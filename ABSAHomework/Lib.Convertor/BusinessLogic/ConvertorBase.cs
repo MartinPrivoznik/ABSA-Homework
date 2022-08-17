@@ -11,7 +11,7 @@ namespace Lib.Convertor.BusinessLogic
         /// For example if base unit is bit then supported unit can be < "byte", 8 >
         /// set base unit to 1
         /// </summary>
-        protected IDictionary<string, decimal> _supportedUnits = new Dictionary<string, decimal>();
+        protected IDictionary<string, double> _supportedUnits = new Dictionary<string, double>();
 
         public Task<string> Convert(string from, string to)
         {
@@ -20,7 +20,7 @@ namespace Lib.Convertor.BusinessLogic
                 //Prepare from value
                 var fromSplitted = from.Split(' ');
 
-                var fromValue = decimal.Parse(fromSplitted[0]);
+                var fromValue = double.Parse(fromSplitted[0]);
                 var fromName = fromSplitted[1];
 
                 //Convert it to base value (no prefix)
@@ -29,20 +29,22 @@ namespace Lib.Convertor.BusinessLogic
                 //Convert to base unit
                 var fromBaseUnitValue = GetBaseUnitValue(fromName, fromValue);
 
+                //Convert to new one
                 var toResultExponent = _sIPrefixHelper.GetUnitPrefixExponent(to);
-                var toResultValue = GetNewUnitValue(_sIPrefixHelper.GetUnitNameWithoutPrefix(to), fromBaseUnitValue);
+                var toResultValue = GetValueWithSI(GetNewUnitValue(_sIPrefixHelper.GetUnitNameWithoutPrefix(to), fromBaseUnitValue), toResultExponent);
 
-                return $"{GetValueWithSI(toResultValue, toResultExponent)} {to}";
+                return $"{toResultValue} {to}";
             });
         }
 
-        private decimal GetNewUnitValue(string newUnitName, decimal baseUnitValue)
+        private double GetNewUnitValue(string newUnitName, double baseUnitValue)
         {
+            //Not the most accurate way of calculation
             var coeficient = _supportedUnits.Where(unit => unit.Key == newUnitName).First().Value;
             return baseUnitValue / coeficient;
         }
 
-        private decimal GetBaseUnitValue(string name, decimal value)
+        private double GetBaseUnitValue(string name, double value)
         {
             var coeficient = _supportedUnits.Where(unit => unit.Key == name).First().Value;
             return value * coeficient;
@@ -53,16 +55,16 @@ namespace Lib.Convertor.BusinessLogic
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        private void ConvertToBaseSIValue(ref string name, ref decimal value)
+        private void ConvertToBaseSIValue(ref string name, ref double value)
         {
             var oldName = name;
             name = _sIPrefixHelper.GetUnitNameWithoutPrefix(oldName);
-            value = value * System.Convert.ToDecimal(Math.Pow(10, _sIPrefixHelper.GetUnitPrefixExponent(oldName)));
+            value = value * Math.Pow(10, _sIPrefixHelper.GetUnitPrefixExponent(oldName));
         }
 
-        private decimal GetValueWithSI(decimal value, int exponent)
+        private double GetValueWithSI(double value, int exponent)
         {
-            return value / System.Convert.ToDecimal(Math.Pow(10, exponent));
+            return value / Math.Pow(10, exponent);
         }
     }
 }
