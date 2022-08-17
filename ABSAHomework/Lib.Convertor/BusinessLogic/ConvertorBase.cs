@@ -1,8 +1,9 @@
-﻿using Lib.Convertor.Helpers;
+﻿using Lib.Convertor.Core;
+using Lib.Convertor.Helpers;
 
 namespace Lib.Convertor.BusinessLogic
 {
-    public abstract class ConvertorBase
+    public abstract class ConvertorBase : IConvertor
     {
         private SIPrefixHelper _sIPrefixHelper = new();
 
@@ -13,7 +14,7 @@ namespace Lib.Convertor.BusinessLogic
         /// </summary>
         protected IDictionary<string, double> _supportedUnits = new Dictionary<string, double>();
 
-        public Task<string> Convert(string from, string to)
+        public virtual Task<string> Convert(string from, string to)
         {
             return Task.Run(() =>
             {

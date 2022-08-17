@@ -9,7 +9,7 @@ namespace Lib.Convertor.BusinessLogic
             _supportedUnits = new Dictionary<string, double>()
             {
                 { "bit", 1 },
-                { "byte", 8 }
+                { "byte", 8 } // 1 byte = 8 bits
             };
         }
     }
