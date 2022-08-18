@@ -23,8 +23,6 @@ namespace Lib.Convertor.BusinessLogic
                 //Check for valid formula
                 var conversion = _supportedConversions.Where(con => con.From == fromName && con.To == to).First();
 
-                var x = conversion.Formula(fromValue);
-
                 //Run the delegate and return
                 return $"{conversion.Formula(fromValue)} {to}";
             });
